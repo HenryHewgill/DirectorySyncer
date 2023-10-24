@@ -1,16 +1,10 @@
-//  CITS2002 Project 2 2023
-//  Student1:   23012728   HENRY_HEWGILL
-//  Student2:   N/A        N/A
-
 //PROGRAM HEADERS
+#include "mysync.h" //contains shared library headers
 #include "directorymanager.h"
 #include "datastructures.h"
 #include "patternprocessor.h"
 //LIBRARY HEADERS
-#include <stdlib.h>
-#include <stdio.h>
 #include <getopt.h>
-#include <string.h>
 
 #define OPTLIST "anvrpi:o:"
 
@@ -46,10 +40,6 @@ int main(int argc, char *argv[]) {
                 break;
             case 'i': {
                 //printf("option -i with argument: %s\n", optarg); //DEBUG
-                //switch_conditions.ignore_regex = (char **) realloc(switch_conditions.ignore_regex, (switch_conditions.n_ignore_regex + 1) * sizeof(char *));
-                //test_for_memory_allocation_error(switch_conditions.ignore_regex);
-                //switch_conditions.ignore_regex[switch_conditions.n_ignore_regex] = strdup(optarg);
-                //++switch_conditions.n_ignore_regex;
                 char *regex = glob_to_regex(optarg);
                 if(regex == NULL) {
                     fprintf(stderr, "Failed to convert %s to regex.\n", optarg);
@@ -77,10 +67,10 @@ int main(int argc, char *argv[]) {
         store_string(&top_level_directories, &n_top_level_directories, argv[i]);
         //printf("%s\n", argv[i]); //DEBUG
     }
-    print_top_level_directories(); //DEBUG
-    print_switch_conditions(); //DEBUG
+    //print_top_level_directories(); //DEBUG
+    //print_switch_conditions(); //DEBUG
     collect_every_directorys_files();
-    print_all_files(); //DEBUG
+    //print_all_files(); //DEBUG
     collect_newest_unique_files();
     write_files_to_directories();
     return EXIT_SUCCESS;

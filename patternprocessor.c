@@ -1,16 +1,14 @@
 //PROGRAM HEADERS
+#include "mysync.h" //contains shared library headers
 #include "patternprocessor.h"
 //LIBRARY HEADERS
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include <regex.h>
 #include <stdbool.h>
 
-//  CONVERT A FILENAME PATTERN (a glob) TO A REGULAR EXPRESSION.
-//  FILENAME PATTERNS MAY NOT INCLUDE DIRECTORY SEPARATORS.
-//	ON SUCCESS - A REGULAR EXPRESSION WILL BE RETURNED IN DYNAMICALLY ALLOCATED MEMORY.
-//	ON FAILURE - A NULL POINTER WILL BE RETURNED.
+//CONVERT A FILENAME PATTERN (a glob) TO A REGULAR EXPRESSION.
+//FILENAME PATTERNS MAY NOT INCLUDE DIRECTORY SEPARATORS.
+//ON SUCCESS - A REGULAR EXPRESSION WILL BE RETURNED IN DYNAMICALLY ALLOCATED MEMORY.
+//ON FAILURE - A NULL POINTER WILL BE RETURNED.
 char *glob_to_regex(char *glob) {
     char *re = NULL;
     if(glob != NULL) {
@@ -62,7 +60,7 @@ bool filename_matches_regex(char *full_path, char *regex_string) {
             break;
         }
     }
-    printf("filename conversion in regex test: %s\n", filename); //DEBUG
+    //printf("filename conversion in regex test: %s\n", filename); //DEBUG
     //COMPILE THE REGULAR EXPRESSION
     regex_t regex;
     int ret = regcomp(&regex, regex_string, REG_EXTENDED);
@@ -75,7 +73,7 @@ bool filename_matches_regex(char *full_path, char *regex_string) {
     ret = regexec(&regex, filename, 0, NULL, 0);
     if(!ret) {
         //MATCH
-        printf("file %s matches regex %s\n", filename, regex_string); //DEBUG
+        //rintf("file %s matches regex %s\n", filename, regex_string); //DEBUG
         regfree(&regex);
         free(regex_string);
         return true;
@@ -83,7 +81,7 @@ bool filename_matches_regex(char *full_path, char *regex_string) {
     } 
     else if(ret == REG_NOMATCH) {
         //NO MATCH
-        printf("file %s does not match regex %s\n", filename, regex_string); //DEBUG
+        //printf("file %s does not match regex %s\n", filename, regex_string); //DEBUG
         regfree(&regex);
         free(regex_string);
         return false;

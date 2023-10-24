@@ -1,8 +1,10 @@
+//PROGRAM HEADERS
+#include "mysync.h" //contains shared library headers
 //LIBRARY HEADERS
 #include <stdbool.h>
-#include <string.h>
 #include <time.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 
 //SHARED STRUCTURES
 typedef struct {

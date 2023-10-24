@@ -1,12 +1,10 @@
 //PROGRAM HEADERS
+#include "mysync.h" //contains shared library headers
 #include "directorymanager.h"
 #include "sorter.h"
 #include "datastructures.h"
 #include "patternprocessor.h"
 //LIBRARY HEADERS
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include <dirent.h> //DIR, struct dirent, opendir(), readdir()
 #include <sys/stat.h> //struct stat, stat(), S_ISDIR(), S_ISREG(), fchmod()
 #include <sys/types.h>
@@ -19,7 +17,7 @@
 #define FILE_WRITING_BUFFER_SIZE 10000
 
 void validate_top_level_directory(char *directory) {
-    printf("directory to validate: %s\n", directory); //DEBUG
+    //printf("directory to validate: %s\n", directory); //DEBUG
     DIR *p_directory = opendir(directory);
     if(p_directory == NULL) {
         perror(directory);
@@ -40,7 +38,7 @@ char *step_down_hierarchy(char *directory) { //returns the directory path below 
 }
 
 void ensure_directory_structure_exists(char *directory) {
-    printf("directory_structure_to_ensure: %s\n", directory); //DEBUG
+    //printf("directory_structure_to_ensure: %s\n", directory); //DEBUG
     DIR *p_directory = opendir(directory);
     if(p_directory == NULL) {
         //DIRECTORY DOESN'T EXIST
@@ -51,15 +49,13 @@ void ensure_directory_structure_exists(char *directory) {
             perror(directory);
             exit(EXIT_FAILURE);
         }
-        else {
-            printf("created directory: %s\n", directory); //DEBUG
-        }
+        //printf("created directory: %s\n", directory); //DEBUG
     }
     else {
         //DIRECTORY EXISTS
-        printf("directory exists: %s\n", directory); //DEBUG
+        //printf("directory exists: %s\n", directory); //DEBUG
         closedir(p_directory);
-        printf("successfully closed %s\n", directory); //DEBUG
+        //printf("successfully closed %s\n", directory); //DEBUG
     }
 }
 
@@ -123,7 +119,7 @@ void create_or_update_file_from_stored_file(bool create_not_update, char *full_p
 }
 
 void process_directory(char *directory, char *top_level_directory) { //top_level_directory will cascade down through recursive calls to be stored with files
-    printf("directory to process: %s\n", directory); //DEBUG
+    //printf("directory to process: %s\n", directory); //DEBUG
     DIR *p_directory = opendir(directory);
     struct dirent *p_dir_entry;
     struct stat stat_buffer; //status information of a file gets populated in this stat
@@ -144,7 +140,7 @@ void process_directory(char *directory, char *top_level_directory) { //top_level
                 //printf("self or parent directory to ignore: %s\n", p_dir_entry->d_name); //DEBUG
                 continue; //(ignore it)
             }
-            printf("%s is a directory\n", full_path); //DEBUG
+            //printf("%s is a directory\n", full_path); //DEBUG
             if(switch_conditions.use_recursive_processing) {
                 //RECURSIVELY PROCESS THE SUB DIRECTORY
                 //printf("directory to recursively process: %s\n", full_path); DEBUG
@@ -153,15 +149,15 @@ void process_directory(char *directory, char *top_level_directory) { //top_level
         }
         else if(S_ISREG(stat_buffer.st_mode)) {
             //IS A FILE
-            printf("%s is a regular file\n", full_path); //DEBUG
+            //printf("%s is a regular file\n", full_path); //DEBUG
             if(p_dir_entry->d_name[0] == '.') {
                 //IS A HIDDEN FILE
-                printf("hidden file: %s\n", full_path); //DEBUG
+                //printf("hidden file: %s\n", full_path); //DEBUG
                 if(!switch_conditions.include_hiddens) {
-                    printf("ignore hidden file: %s\n", full_path); //DEBUG
+                    //printf("ignore hidden file: %s\n", full_path); //DEBUG
                     continue; //(ignore it)
                 }
-                printf("NOT IGNORED\n"); //DEBUG
+                //printf("NOT IGNORED\n"); //DEBUG
             }
             //CHECK AGAINST IGNORE PATTERNS
             bool matches_ignore_pattern = false;
@@ -173,7 +169,7 @@ void process_directory(char *directory, char *top_level_directory) { //top_level
                 }
             }
             if(matches_ignore_pattern) {
-                printf("ignore pattern match for file: %s, ignored\n", full_path); //DEBUG
+                //printf("ignore pattern match for file: %s, ignored\n", full_path); //DEBUG
                 continue; //(ignore it)
             }
             //CHECK AGAINST ONLY PATTERNS
@@ -216,9 +212,9 @@ void collect_every_directorys_files() { //STORE IN all_files
 }
 
 void collect_newest_unique_files() { //STORE IN unique_files
-    printf("collecting newest unique files!\n"); //DEBUG
+    //printf("collecting newest unique files!\n"); //DEBUG
     sort_all_files_by_location_and_name();
-    print_all_files(); //DEBUG
+    //print_all_files(); //DEBUG
     //ITERATE OVER SORTED all_files AND STORE THE NEWEST VERSION OF EACH
     if(n_all_files != 0) {
         DIR_FILE file_to_store = all_files[0];
@@ -237,11 +233,11 @@ void collect_newest_unique_files() { //STORE IN unique_files
         }
         store_file(&unique_files, &n_unique_files, file_to_store.top_level_directory, file_to_store.modification_time, file_to_store.location_and_name, file_to_store.permissions);
     }
-    print_unique_files(); //DEBUG
+    //print_unique_files(); //DEBUG
 }
 
 void write_files_to_directories() {
-    printf("writing files to directories:\n"); //DEBUG
+    //printf("writing files to directories:\n"); //DEBUG
     umask(0); //ensure that each file / directory created's permissions aren't modified by the system's umask value
     for(int f = 0; f < n_unique_files; ++f) {
         //FOR EACH UNIQUE FILE
